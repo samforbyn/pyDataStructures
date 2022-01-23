@@ -64,7 +64,7 @@ def students_by_cohort(filename, cohort='All'):
       newLine = line.strip()
       lineList = newLine.split('|') 
       
-      if lineList[4] is not 'G' and lineList[4] is not 'I':
+      if lineList[4] != 'G' and lineList[4] != 'I':
         if cohort == 'All':
           student = f"{lineList[0]} {lineList[1]}"
           students.append(student)
@@ -117,7 +117,7 @@ def all_names_by_house(filename):
     # TODO: 
     f = open(filename, "r").readlines()
       
-    list = []
+    list = [dumbledores_army, gryffindor, hufflepuff, ravenclaw, slytherin, ghosts, instructors]
 
     for line in f:
       newLine = line.strip()
@@ -126,20 +126,27 @@ def all_names_by_house(filename):
 
       if "Dumbledore's Army" in lineList:
         dumbledores_army.append(student)
+        dumbledores_army.sort()
       elif "Gryffindor" in lineList:
         gryffindor.append(student)
+        gryffindor.sort()
       elif "Hufflepuff" in lineList:
         hufflepuff.append(student)
+        hufflepuff.sort()
       elif "Ravenclaw" in lineList:
         ravenclaw.append(student)
+        ravenclaw.sort()
       elif "Slytherin" in lineList:
         slytherin.append(student)
+        slytherin.sort()
       elif "G" == lineList[4]:
         ghosts.append(student)
+        ghosts.sort()
       elif "I" == lineList[4]:
         instructors.append(student)
+        instructors.sort()
       
-      
+    
 
     return list
 
@@ -165,7 +172,16 @@ def all_data(filename):
 
     all_data = []
 
-    # TODO: replace this with your code
+    # TODO:
+    f = open(filename, "r").readlines()
+      
+    for line in f:
+      newLine = line.strip()
+      lineList = newLine.split('|') 
+      person = f"{lineList[0]} {lineList[1]}"
+      fmtd = (person, lineList[2], lineList[3], lineList[4])
+      all_data.append(fmtd)
+  
 
     return all_data
 
@@ -191,8 +207,17 @@ def get_cohort_for(filename, name):
       - str: the person's cohort or None
     """
 
-    # TODO: replace this with your code
+    # TODO:
+    f = open(filename, "r").readlines()
+    
 
+    for line in f:
+      newLine = line.strip()
+      lineList = newLine.split('|') 
+      person = f"{lineList[0]} {lineList[1]}"
+
+      if name == person:
+        return lineList[4]
 
 def find_duped_last_names(filename):
     """Return a set of duplicated last names that exist in the data.
@@ -208,7 +233,21 @@ def find_duped_last_names(filename):
       - set[str]: a set of strings
     """
 
-    # TODO: replace this with your code
+    # TODO: 
+
+    f = open(filename, "r").readlines()
+    
+    all_last_names = []
+
+    for line in f:
+      newLine = line.strip()
+      lineList = newLine.split('|') 
+      all_last_names.append(lineList[1])
+    
+    dupls = {x for x in all_last_names if all_last_names.count(x) >= 2}
+
+    return dupls
+    
 
 
 def get_housemates_for(filename, name):
@@ -223,8 +262,33 @@ def get_housemates_for(filename, name):
     {'Angelina Johnson', ..., 'Seamus Finnigan'}
     """
 
-    # TODO: replace this with your code
-
+    # TODO: 
+    f = open(filename, "r").readlines()
+    given_student = []
+    housemates = set()
+    given_house = None
+    given_year = None
+    for line in f:
+      newLine = line.strip()
+      lineList = newLine.split('|') 
+      person = f"{lineList[0]} {lineList[1]}"
+      
+      if name == person:
+        given_student.append(person)
+        given_student.append(lineList[2])
+        given_house = lineList[2]
+        given_student.append(lineList[3])
+        given_student.append(lineList[4])
+        given_year = lineList[4]
+      # print(given_house, given_year)
+    for x in all_data(filename):
+      if x[1] == given_house:
+        if x[3] == given_year:
+          if x[0] != given_student[0]:
+            housemates.add(x[0])
+    return housemates
+    # return all_data(filename)
+# print(get_housemates_for('cohort_data.txt', 'Hermione Granger'))
 
 ##############################################################################
 # END OF MAIN EXERCISE.  Yay!  You did it! You Rock!
